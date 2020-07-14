@@ -1,16 +1,35 @@
 <template>
   <div class="container col-md-6 mt-5">
     <h2>Login</h2>
-    <form>
+    <form @submit.prevent="submit">
       <div class="form-group">
         <label>Email address</label>
-        <input type="email" class="form-control" placeholder="Enter email">
-        <small class="form-text text-danger">Show errors here</small>
+        <input
+          v-model.trim="form.email"
+          type="email"
+          class="form-control"
+          placeholder="Enter email"
+          autofocus
+        >
+        <template v-if="errors.email">
+          <small class="form-text text-danger" v-for="error in errors.email">
+            {{ error }}
+          </small>
+        </template>
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" class="form-control" placeholder="Password">
-        <small class="form-text text-danger">Show errors here</small>
+        <input
+          v-model.trim="form.password"
+          type="password"
+          class="form-control"
+          placeholder="Password"
+        >
+        <template v-if="errors.password">
+          <small class="form-text text-danger" v-for="error in errors.password">
+            {{ error }}
+          </small>
+        </template>
       </div>
       <button type="submit" class="btn btn-primary">Login</button>
     </form>
@@ -22,5 +41,30 @@
 </template>
 
 <script>
-  export default {}
+  export default {
+    middleware: ['guest'],
+    data() {
+      return {
+        form: {
+          email: '',
+          password: ''
+        }
+      }
+    },
+    methods: {
+      async submit() {
+        try {
+          // $auth because of Nuxt Auth module, 'local' because of nuxt config settings
+          await this.$auth.loginWith('local', {data: this.form});
+
+          this.$router.push({
+            path: this.$route.query.redirect || '/profile'
+          });
+        } catch (err) {
+          //TODO
+          console.log(err)
+        }
+      }
+    }
+  }
 </script>

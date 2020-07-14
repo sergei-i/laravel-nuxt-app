@@ -34,11 +34,19 @@ export default {
   ** Global CSS
   */
   css: [],
+
+  router: {
+    middleware: ['clearValidationErrors']
+  },
   /*
   ** Plugins to load before mounting the App
   ** https://nuxtjs.org/guide/plugins
   */
-  plugins: [],
+  plugins: [
+    '@/plugins/mixins/user.js',
+    '@/plugins/mixins/validation.js',
+    '@/plugins/axios.js'
+  ],
   /*
   ** Auto import components
   ** See https://nuxtjs.org/api/configuration-components
@@ -54,12 +62,26 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
-  axios: {},
+  axios: {
+    baseURL: 'http://lara-nuxt.loc'
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {url: '/api/login', method: 'post', propertyName: 'meta.token'},
+          logout: {url: '/api/logout', method: 'post'},
+          user: {url: '/api/user', method: 'get', propertyName: 'data'}
+        }
+      }
+    }
+  },
   /*
   ** Build configuration
   ** See https://nuxtjs.org/api/configuration-build/
