@@ -33,6 +33,15 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -53,12 +62,18 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function ownsTopic(Topic $topic)
+    {
+        return $this->id === $topic->user_id;
+    }
+
+    public function ownsPost(Post $post)
+    {
+        return $this->id === $post->user_id;
+    }
+
+    public function hasLikedPost(Post $post)
+    {
+        return $post->likes->where('user_id', $this->id)->count() === 1;
+    }
 }
