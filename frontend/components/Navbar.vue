@@ -35,7 +35,7 @@
             <a class="nav-link">{{ user.name }}</a>
           </li>
           <li class="nav-item">
-            <a @click.prevent="logout" class="nav-link">Logout</a>
+            <a href="#" @click.prevent="logout" class="nav-link">Logout</a>
           </li>
         </ul>
       </template>
